@@ -51,8 +51,40 @@
 
   <script>
     function listen() {
-      document.getElementById("status").innerText =
-        "Listening...";
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    document.getElementById("status").innerText =
+      "Voice recognition isn't supported here.";
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.continuous = false;
+
+  recognition.onstart = function () {
+    document.getElementById("status").innerText =
+      "Listening...";
+  };
+
+  recognition.onresult = function (event) {
+    const text = event.results[0][0].transcript;
+
+    document.getElementById("status").innerText =
+      "You said: " + text;
+  };
+
+  recognition.onerror = function () {
+    document.getElementById("status").innerText =
+      "I couldn't hear you.";
+  };
+
+  recognition.start();
+}
     }
   </script>
 
