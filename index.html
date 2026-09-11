@@ -17,59 +17,56 @@
       background: #05070a;
       color: #00d9ff;
       font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
       text-align: center;
     }
 
     .container {
-      width: 100%;
       max-width: 500px;
+      margin: auto;
       padding: 50px 20px;
     }
 
     h1 {
       font-size: 45px;
       letter-spacing: 10px;
-      margin: 20px 0 10px;
+      margin-bottom: 10px;
     }
 
     .subtitle {
       color: #78909c;
-      font-size: 14px;
       letter-spacing: 3px;
-      margin-bottom: 60px;
+      margin-bottom: 50px;
     }
 
     #status {
       color: white;
-      min-height: 30px;
-      margin-bottom: 35px;
-      font-size: 17px;
+      margin: 25px;
     }
 
-    #micButton {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      border: 3px solid #00d9ff;
+    #message {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #00d9ff;
+      background: #081018;
+      color: white;
+      font-size: 16px;
+      outline: none;
+    }
+
+    #send {
+      margin-top: 15px;
+      padding: 15px 30px;
+      border: 2px solid #00d9ff;
+      border-radius: 10px;
       background: #081018;
       color: #00d9ff;
-      font-size: 55px;
-      cursor: pointer;
-      box-shadow: 0 0 25px rgba(0, 217, 255, 0.25);
-    }
-
-    #micButton:active {
-      transform: scale(0.95);
-      background: #00d9ff;
-      color: #05070a;
+      font-size: 18px;
     }
 
     #response {
-      margin-top: 50px;
+      margin-top: 35px;
       color: white;
-      font-size: 18px;
       line-height: 1.5;
     }
   </style>
@@ -89,8 +86,16 @@
       Ready
     </div>
 
-    <button id="micButton">
-      🎙️
+    <input
+      id="message"
+      type="text"
+      placeholder="Talk to Jarvis..."
+    >
+
+    <br>
+
+    <button id="send">
+      SEND
     </button>
 
     <div id="response"></div>
@@ -99,64 +104,28 @@
 
   <script>
 
-    const micButton = document.getElementById("micButton");
+    const message = document.getElementById("message");
+    const send = document.getElementById("send");
     const status = document.getElementById("status");
     const response = document.getElementById("response");
 
-    micButton.addEventListener("click", startListening);
+    send.addEventListener("click", function() {
 
-    function startListening() {
+      const text = message.value.trim();
 
-      const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
-
-      if (!SpeechRecognition) {
-
-        status.innerText =
-          "Voice recognition is not supported in this browser.";
-
+      if (!text) {
+        status.innerText = "Type something first.";
         return;
       }
 
-      const recognition = new SpeechRecognition();
+      status.innerText = "Message received.";
 
-      recognition.lang = "en-US";
-      recognition.interimResults = false;
-      recognition.continuous = false;
+      response.innerText =
+        "You said: " + text;
 
-      status.innerText = "Listening...";
-      response.innerText = "";
+      message.value = "";
 
-      recognition.onresult = function(event) {
-
-        const spokenText =
-          event.results[0][0].transcript;
-
-        status.innerText = "I heard you.";
-
-        response.innerText =
-          "You said: " + spokenText;
-
-      };
-
-      recognition.onerror = function(event) {
-
-        status.innerText =
-          "Microphone error: " + event.error;
-
-      };
-
-      recognition.onend = function() {
-
-        if (status.innerText === "Listening...") {
-          status.innerText = "Ready";
-        }
-
-      };
-
-      recognition.start();
-    }
+    });
 
   </script>
 
